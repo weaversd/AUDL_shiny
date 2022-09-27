@@ -1,0 +1,13 @@
+name: AUDL_shiny
+title: AUDL_shiny
+username:
+account: sweaver4
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7137454
+bundleId: 6344598
+url: https://sweaver4.shinyapps.io/AUDL_shiny/
+when: 1664308250.66572
+lastSyncTime: 1664308250.66576
+asMultiple: FALSE
+asStatic: FALSE

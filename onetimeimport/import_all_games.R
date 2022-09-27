@@ -114,6 +114,7 @@ for (game in unique(games$gameID)) {
   date <- temp$date[1]
   gameID <- temp$gameID[1]
   type <- temp$type[1]
+  year <- as.character(format(date,'%Y'))
   
   if (homeScore > awayScore) {
     winner <- homeTeam
@@ -137,7 +138,8 @@ for (game in unique(games$gameID)) {
                      gameID = gameID,
                      winner = winner,
                      loser = loser,
-                     type = type)
+                     type = type,
+                     season = year)
   
   games_list[[length(games_list) + 1]] <- game
   
@@ -147,7 +149,7 @@ all_games <- bind_rows(games_list)
 
 all_games <- all_games[order(all_games$date),]
 
-write.csv(all_games, "../dataFiles/all_games_asof_2022.csv")
+write.csv(all_games, "../dataFiles/all_games_asof_2022.csv", row.names = F)
 
 
 write.csv(games, "../dataFiles/raw_games.csv")
