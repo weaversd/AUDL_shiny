@@ -63,5 +63,28 @@ server <- function(input, output, session) {
   })
   
   output$historicalEloPlot <- renderPlotly(ggplotly(Historical_elo_plot(), tooltip = c("date", "y", "colour")))
-  #output$Elo_table <- renderTable(Historical_elo_plot_data())
+  
+  elo_team_table <- reactive({
+    generate_current_team_table(elo_team_list = Historical_elo_plot_data(), date = input$eloDate)
+  })
+  
+  output$eloTeamTable <- renderTable(elo_team_table())
+  
+  Home_elo_score <- reactive(get_elo_team_date(Historical_elo_plot_data(),
+                                               team = input$homeTeamPredict,
+                                               date = input$homeTeamEloDate))
+  Away_elo_score <- reactive(get_elo_team_date(Historical_elo_plot_data(),
+                                               team = input$awayTeamPredict,
+                                               date = input$awayTeamEloDate))
+  output$Home_elo_score_text <- renderText(paste0("Elo: ", round(Home_elo_score(), 2)))
+  output$Away_elo_score_text <- renderText(paste0("Elo: ", round(Away_elo_score(), 2)))
+  
+  home_win_pct <- reactive(calc_expected_home_win_perc(Home_elo_score(), Away_elo_score(),
+                                              homeAdv = input$homeAdvantage, 
+                                              EloDenom = input$EloDenom)[1])
+  away_win_pct <- reactive(1 - home_win_pct())
+  
+  output$Home_win_pct_text <- renderText(paste0("Win Pct: ", round(home_win_pct() * 100, 2), "%"))
+  output$Away_win_pct_text <- renderText(paste0("Win Pct: ", round(away_win_pct() * 100, 2), "%"))
+  
 }

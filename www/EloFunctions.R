@@ -144,3 +144,50 @@ create_plotable_data <- function(elo_games) {
   return(list(plot_df, cutoff_vector))
   
 }
+
+
+generate_current_team_table <- function(elo_team_list = NULL, date = NULL) {
+  
+  if (is.null(date)) {
+    date <- Sys.Date()
+  }
+  
+  date <- as.Date(date)
+  
+  current_team_df <- data.frame(teamName = current_teams)
+  
+  current_team_df$teamCode = ""
+  current_team_df$region = ""
+  current_team_df$elo = NA
+  
+  for (i in 1:nrow(current_team_df)) {
+    team <- current_team_df$teamName[i]
+    current_team_df$teamCode[i] <- team_df$teamCode[team_df$teamName == team]
+    current_team_df$region[i] <- team_df$region[team_df$teamName == team]
+    
+    team_elo_df <- elo_team_list[elo_team_list$team == team & elo_team_list$date <= date,]
+    
+    if (nrow(team_elo_df) > 0) {
+      current_team_df$elo[i] <- team_elo_df$elo[which.min(date - team_elo_df$date)]
+    } else {
+      current_team_df$elo[i] <- NA
+    }
+  }
+  
+  current_team_df <- current_team_df[order(-current_team_df$elo),]
+  
+  return(current_team_df)
+}
+
+get_elo_team_date <- function(elo_team_list, team, date) {
+  
+  team_elo_df <- elo_team_list[elo_team_list$team == team & elo_team_list$date <= date,]
+  
+  if (nrow(team_elo_df) > 0) {
+    elo_score <- team_elo_df$elo[which.min(date - team_elo_df$date)]
+  } else {
+    stop("Team did not exist at that time")
+  }
+
+  return(elo_score)
+}

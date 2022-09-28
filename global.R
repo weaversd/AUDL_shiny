@@ -115,3 +115,6 @@ team_df <- data.frame(teamName = all_teams,
                       teamCode = all_codes,
                       teamID = all_Ids,
                       region = regions)   
+
+
+options(shiny.sanitize.errors = FALSE)
